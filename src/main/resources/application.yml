@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: service-admin
+  profiles:
+      active: secure
+  security:
+    user:
+      name: admin
+      password: 123
+  boot:
+    admin:
+      probed: '*'
+      notify:
+        dingtalk:
+          enabled: true
+          webhook-token: "https://oapi.dingtalk.com/robot/send?access_token=93976b4681f4e278224fdd002e7f0b6f82e8008522f71a07946db50cfa0a93ca"
+  jmx:
+    enabled: true
+server:
+  port: 8766
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1 #服务刷新时间配置，每隔这个时间会主动心跳一次
+    metadata-map:
+        user:
+            name: ${spring.security.user.name}         #These two are needed so that the server
+            password: ${spring.security.user.password} #can access the protected client endpoints
+    health-check-url-path: /actuator/health
+  client:
+    service-url:
+#      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@localhost:8765/eureka/
+      defaultZone: http://localhost:8765/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      # 是否展示健康检查详情
+      show-details: ALWAYS
+logging:
+  level:
+    root: info
+  file: /var/log/sample-boot-application.log
+info:
+  version: @project.version@
+  groupId: @project.groupId@
+  artifactId: @project.artifactId@
